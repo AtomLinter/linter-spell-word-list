@@ -10,12 +10,12 @@ manager use an implementation of `provideDictionary` like the following.
 
 ```javascript
 provideDictionary () {
-  let a = new WordListProvider('Plain Text',
+  let a = new ConfigWordList('Plain Text',
     'linter-spell.plainTextWords', [
       'text.plain',
       'text.plain.null-grammar'
     ])
   this.disposables.add(a)
-  return provideDictionary())
+  return provideDictionary()
 }
 ```

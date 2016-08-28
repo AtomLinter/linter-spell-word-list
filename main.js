@@ -58,7 +58,7 @@ export class WordList extends Disposable {
 
 export class ConfigWordList extends WordList {
 
-  constructor (name, grammarScopes, keyPath) {
+  constructor (name, keyPath, grammarScopes) {
     super(name, grammarScopes)
 
     this.keyPath = keyPath
