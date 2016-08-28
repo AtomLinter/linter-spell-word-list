@@ -20,14 +20,14 @@ export class WordList extends Disposable {
     }
   }
 
-  getWords () {
+  getWords (textEditor, languages) {
     return []
   }
 
   checkWord (textEditor, languages, range) {
     {
       const text = textEditor.getTextInBufferRange(range)
-      for (const word of this.getWords()) {
+      for (const word of this.getWords(textEditor, languages)) {
         if ((word.startsWith('!') && text === word.substring(1)) || text.toLowerCase() === word.toLowerCase()) {
           return { isWord: true }
         }
@@ -49,7 +49,7 @@ export class WordList extends Disposable {
     }
   }
 
-  addWord (word) {}
+  addWord (textEditor, languages, word) {}
 
   provideDictionary () {
     return this.provider
@@ -65,11 +65,11 @@ export class ConfigWordList extends WordList {
     this.disposables.add(atom.config.onDidChange(this.keyPath, ({newValue}) => this.words = newValue))
   }
 
-  getWords () {
+  getWords (textEditor, languages) {
     return this.words
   }
 
-  addWord (word) {
+  addWord (textEditor, languages, word) {
     atom.config.set(this.keyPath, _.concat(this.words, word))
   }
 

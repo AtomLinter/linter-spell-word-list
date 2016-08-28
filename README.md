@@ -33,11 +33,11 @@ class MyWordList extends WordList {
     this.words = []
   }
 
-  getWords () {
+  getWords (textEditor, languages) {
     return this.words
   }
 
-  addWord (word) {
+  addWord (textEditor, languages, word) {
     this.words.push(word)
   }
 }
