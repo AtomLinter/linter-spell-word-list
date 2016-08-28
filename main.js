@@ -5,17 +5,17 @@ import { Disposable, CompositeDisposable } from 'atom'
 
 export class WordList extends Disposable {
 
-  constructor (name, grammarScopes) {
+  constructor (options) {
     super(() => {
       this.disposables.dispose()
     })
 
     this.disposables = new CompositeDisposable()
-    this.name = name
+    _.assign(this, options)
 
     this.provider = {
-      name: name,
-      grammarScopes: grammarScopes,
+      name: this.name,
+      grammarScopes: this.grammarScopes,
       checkWord: (textEditor, languages, range) => this.checkWord(textEditor, languages, range)
     }
   }
@@ -36,20 +36,20 @@ export class WordList extends Disposable {
         isWord: false,
         actions: [{
           title: `Add to ${this.name} dictionary`,
-          apply: () => this.addWord(text, false)
+          apply: () => this.addWord(text.toLowerCase())
         }]
       }
       if (text.toLowerCase() !== text) {
         result.actions.push({
           title: `Add to ${this.name} dictionary (case sensitive)`,
-          apply: () => this.addWord(text, true)
+          apply: () => this.addWord('!' + text)
         })
       }
       return result
     }
   }
 
-  addWord (word, caseSensitive) {}
+  addWord (word) {}
 
   provideDictionary () {
     return this.provider
@@ -58,20 +58,19 @@ export class WordList extends Disposable {
 
 export class ConfigWordList extends WordList {
 
-  constructor (name, keyPath, grammarScopes) {
-    super(name, grammarScopes)
+  constructor (options) {
+    super(options)
 
-    this.keyPath = keyPath
-    this.words = atom.config.get(keyPath)
-    this.disposables.add(atom.config.onDidChange(keyPath, ({newValue}) => this.words = newValue))
+    this.words = atom.config.get(this.keyPath)
+    this.disposables.add(atom.config.onDidChange(this.keyPath, ({newValue}) => this.words = newValue))
   }
 
   getWords () {
     return this.words
   }
 
-  addWord (word, caseSensitive) {
-    atom.config.set(this.keyPath, _.concat(this.words, caseSensitive ? '!' + word : word.toLowerCase()))
+  addWord (word) {
+    atom.config.set(this.keyPath, _.concat(this.words, word))
   }
 
 }
