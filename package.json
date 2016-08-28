@@ -1,0 +1,26 @@
+{
+  "name": "linter-spell-word-list",
+  "version": "0.1.0",
+  "description": "Helper classes to assist in implementation of linter-spell (Atom) dictionaries based on word lists.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yitzchak/linter-spell-word-list.git"
+  },
+  "keywords": [
+    "linter-spell"
+  ],
+  "dependencies": {
+    "lodash": "^4.13.0",
+    "natural": "^0.4.0"
+  },
+  "author": "Tarn Burton <twburton@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yitzchak/linter-spell-word-list/issues"
+  },
+  "homepage": "https://github.com/yitzchak/linter-spell-word-list"
+}
