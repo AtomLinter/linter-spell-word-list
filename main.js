@@ -36,13 +36,13 @@ export class WordList extends Disposable {
         isWord: false,
         actions: [{
           title: `Add to ${this.name} dictionary`,
-          apply: () => this.addWord(text.toLowerCase())
+          apply: () => this.addWord(textEditor, languages, text.toLowerCase())
         }]
       }
       if (text.toLowerCase() !== text) {
         result.actions.push({
           title: `Add to ${this.name} dictionary (case sensitive)`,
-          apply: () => this.addWord('!' + text)
+          apply: () => this.addWord(textEditor, languages, '!' + text)
         })
       }
       return result
