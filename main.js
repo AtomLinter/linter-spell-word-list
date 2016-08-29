@@ -21,6 +21,22 @@ export class WordList extends Disposable {
     }
   }
 
+  isWordMatch (word, text) {
+    return (word.startsWith('!') && text === word.substring(1)) ||
+      text.toLowerCase() === word.toLowerCase()
+  }
+
+  suggestWord (word, text) {
+    const caseSensitive = word.startsWith('!')
+    const w = caseSensitive ? word.substring(1) : word.toLowerCase()
+    if (JaroWinklerDistance(w, caseSensitive ? text : text.toLowerCase()) >= this.minimumJaroWinklerDistance) {
+      if (caseSensitive) return w
+      if (_.every(text, c => c === c.toUpperCase())) return w.toUpperCase()
+      if (text[0] === text[0].toUpperCase()) return w[0].toUpperCase() + w.substring(1)
+      return w
+    }
+  }
+
   getWords (textEditor, languages) {
     return []
   }
@@ -30,12 +46,12 @@ export class WordList extends Disposable {
       const text = textEditor.getTextInBufferRange(range)
       const words = this.getWords(textEditor, languages)
 
-      if (_.some(words, word => (word.startsWith('!') && text === word.substring(1)) || text.toLowerCase() === word.toLowerCase())) {
+      if (_.some(words, word => this.isWordMatch(word, text))) {
         resolve({ isWord: true })
       } else {
         const result = {
           isWord: false,
-          suggestions: _.filter(words, word => JaroWinklerDistance(text, word) >= this.minimumJaroWinklerDistance),
+          suggestions: _.filter(_.map(words, word => this.suggestWord(word, text))),
           actions: [{
             title: `Add to ${this.name} dictionary`,
             apply: () => this.addWord(textEditor, languages, text.toLowerCase())
