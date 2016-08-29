@@ -1,6 +1,7 @@
 'use babel'
 
 import * as _ from 'lodash'
+import { JaroWinklerDistance } from 'natural'
 import { Disposable, CompositeDisposable } from 'atom'
 
 export class WordList extends Disposable {
@@ -11,7 +12,7 @@ export class WordList extends Disposable {
     })
 
     this.disposables = new CompositeDisposable()
-    _.assign(this, options)
+    _.assign(this, { minimumJaroWinklerDistance: 0.9 }, options)
 
     this.provider = {
       name: this.name,
@@ -25,28 +26,30 @@ export class WordList extends Disposable {
   }
 
   checkWord (textEditor, languages, range) {
-    {
+    return new Promise((resolve) => {
       const text = textEditor.getTextInBufferRange(range)
-      for (const word of this.getWords(textEditor, languages)) {
-        if ((word.startsWith('!') && text === word.substring(1)) || text.toLowerCase() === word.toLowerCase()) {
-          return { isWord: true }
+      const words = this.getWords(textEditor, languages)
+
+      if (_.some(words, word => (word.startsWith('!') && text === word.substring(1)) || text.toLowerCase() === word.toLowerCase())) {
+        resolve({ isWord: true })
+      } else {
+        const result = {
+          isWord: false,
+          suggestions: _.filter(words, word => JaroWinklerDistance(text, word) >= this.minimumJaroWinklerDistance),
+          actions: [{
+            title: `Add to ${this.name} dictionary`,
+            apply: () => this.addWord(textEditor, languages, text.toLowerCase())
+          }]
         }
+        if (text.toLowerCase() !== text) {
+          result.actions.push({
+            title: `Add to ${this.name} dictionary (case sensitive)`,
+            apply: () => this.addWord('!' + text)
+          })
+        }
+        resolve(result)
       }
-      const result = {
-        isWord: false,
-        actions: [{
-          title: `Add to ${this.name} dictionary`,
-          apply: () => this.addWord(textEditor, languages, text.toLowerCase())
-        }]
-      }
-      if (text.toLowerCase() !== text) {
-        result.actions.push({
-          title: `Add to ${this.name} dictionary (case sensitive)`,
-          apply: () => this.addWord(textEditor, languages, '!' + text)
-        })
-      }
-      return result
-    }
+    })
   }
 
   addWord (textEditor, languages, word) {}
@@ -62,7 +65,8 @@ export class ConfigWordList extends WordList {
     super(options)
 
     this.words = atom.config.get(this.keyPath)
-    this.disposables.add(atom.config.onDidChange(this.keyPath, ({newValue}) => this.words = newValue))
+    this.disposables.add(atom.config.onDidChange(this.keyPath,
+      ({newValue}) => this.words = newValue))
   }
 
   getWords (textEditor, languages) {
