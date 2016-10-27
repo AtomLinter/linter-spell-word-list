@@ -60,7 +60,7 @@ export class WordList extends Disposable {
         if (text.toLowerCase() !== text) {
           result.actions.push({
             title: `Add to ${this.name} dictionary (case sensitive)`,
-            apply: () => this.addWord('!' + text)
+            apply: () => this.addWord(textEditor, languages, '!' + text)
           })
         }
         resolve(result)
