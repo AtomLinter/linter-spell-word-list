@@ -1,6 +1,6 @@
 {
   "name": "linter-spell-word-list",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Helper classes to assist in implementation of linter-spell (Atom) dictionaries based on word lists.",
   "main": "main.js",
   "scripts": {
