@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "lodash": "^4.13.0",
-    "natural": "^0.4.0"
+    "jaro-winkler": "^0.2.8"
   },
   "author": "Tarn Burton <twburton@gmail.com>",
   "license": "MIT",

@@ -1,7 +1,7 @@
 'use babel'
 
 import * as _ from 'lodash'
-import { JaroWinklerDistance } from 'natural'
+import jaroWinkler from 'jaro-winkler'
 import { Disposable, CompositeDisposable } from 'atom'
 
 export class WordList extends Disposable {
@@ -29,7 +29,7 @@ export class WordList extends Disposable {
   suggestWord (word, text) {
     const caseSensitive = word.startsWith('!')
     const w = caseSensitive ? word.substring(1) : word.toLowerCase()
-    if (JaroWinklerDistance(w, caseSensitive ? text : text.toLowerCase()) >= this.minimumJaroWinklerDistance) {
+    if (jaroWinkler(w, caseSensitive ? text : text.toLowerCase()) >= this.minimumJaroWinklerDistance) {
       if (caseSensitive) return w
       if (_.every(text, c => c === c.toUpperCase())) return w.toUpperCase()
       if (text[0] === text[0].toUpperCase()) return w[0].toUpperCase() + w.substring(1)
