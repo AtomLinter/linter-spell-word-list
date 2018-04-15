@@ -4,6 +4,7 @@
   "description": "Helper classes to assist in implementation of linter-spell (Atom) dictionaries based on word lists.",
   "main": "main.js",
   "scripts": {
+    "commitmsg": "commitlint -e $GIT_PARAMS",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -40,5 +41,21 @@
       "waitsForPromise",
       "HTMLDivElement"
     ]
+  },
+  "release": {
+    "extends": "@semantic-release/apm-config"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^6.1.3",
+    "@commitlint/config-conventional": "^6.1.3",
+    "@commitlint/travis-cli": "^6.1.3",
+    "@semantic-release/apm-config": "^2.0.1",
+    "husky": "^0.14.3",
+    "semantic-release": "^15.1.7"
   }
 }
