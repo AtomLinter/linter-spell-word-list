@@ -1,5 +1,7 @@
 # linter-spell-word-list
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/AtomLinter/linter-spell-word-list.svg)](https://greenkeeper.io/)
+
 Helper classes to assist in implementation of [linter-spell](https://atom.io/packages/linter-spell) dictionaries based on
 word lists.
 
